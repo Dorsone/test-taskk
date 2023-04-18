@@ -12,8 +12,9 @@ class FieldStorage
     {
     }
 
-    public function store()
+    public function store(): bool
     {
+        return true;
         // логика сохранения полей
     }
 

@@ -19,8 +19,8 @@ class ActionController extends Controller
     public function store(ValidationRequest $request): RedirectResponse
     {
         $validated = $request->collect('fields');
-        $rules = $this->actionService->getRules($validated);
-        $result = $this->validatorService->validateAll($rules);
+        $fields = $this->actionService->getFields($validated);
+        $result = $this->validatorService->validateAll($fields);
 
         if (!$result['success']) {
             return redirect()->back()

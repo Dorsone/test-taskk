@@ -15,8 +15,9 @@ class FormProcessor
     {
     }
 
-    public function process()
+    public function process(): bool
     {
+        return true;
         //процесс сохранения записей
     }
 

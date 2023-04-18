@@ -2,31 +2,36 @@
 
 namespace App\Services;
 
+use App\Fields\Field;
+use App\Fields\Storage\FormProcessor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class ActionService
 {
-        public function store(array $fields): array
-        {
-            // сохраням в бд уже валидированные записи
-            return [];
-        }
+    public function store(array $fields): array
+    {
+        $storage = new FormProcessor($fields);
+        return ['success' => $storage->process(), 'errors' => $storage->errors()];
+    }
 
-        public function getRules(Collection $fields): Collection
-        {
-            $rules = Model::query()->whereIn('id', $fields->pluck('id'))->get(['id', 'validation', 'label']);
+    /**
+     * @param Collection $fields
+     * @return array<Field>
+     */
+    public function getFields(Collection $fields): array
+    {
+        $rules = Model::query()->whereIn('id', $fields->pluck('id'))->get(['id', 'validation', 'label']);
 
-            return $rules->map(function (Model $model) use (&$fields) {
-                $field = $fields->where('id', '=', $model->id)->first();
+        return $rules->map(function (Model $model) use (&$fields) {
+            $field = $fields->where('id', '=', $model->id)->first();
 
-                return [
-                    'id' => $model->id,
-                    'validation' => $model->validation,
-                    'field' => [
-                        $model->label  => $field['value']
-                    ],
-                ];
-            });
-        }
+            return new Field(
+                $model->id,
+                $field['value'],
+                $model->validation,
+                $model->label,
+            );
+        })->toArray();
+    }
 }

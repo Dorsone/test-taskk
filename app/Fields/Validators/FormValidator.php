@@ -3,6 +3,7 @@
 namespace App\Fields\Validators;
 
 use App\Fields\Field;
+use Generator;
 
 class FormValidator
 {
@@ -10,19 +11,27 @@ class FormValidator
      * @param array<Field> $fields
      */
     public function __construct(
-        protected array $fields
+        protected array $fields,
     )
     {
     }
 
-    public function validate()
+    protected array $errors = [];
+
+    public function validate(): bool
     {
-        // для валидации гупп полей
+        foreach ($this->fields as $field) {
+            $fieldValidator = (new FieldValidator($field));
+            if (!$fieldValidator->validate()) {
+                $this->errors[$field->id] = $fieldValidator->errors();
+            }
+        }
+
+        return empty($this->errors);
     }
 
-    public function errors(): array|null
+    public function errors(): array
     {
-        // возвращает массив ошибок если есть
-        return null;
+        return $this->errors;
     }
 }
