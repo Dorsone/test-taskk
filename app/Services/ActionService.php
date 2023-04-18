@@ -21,16 +21,17 @@ class ActionService
      */
     public function getFields(Collection $fields): array
     {
-        $rules = Model::query()->whereIn('id', $fields->pluck('id'))->get(['id', 'validation', 'label']);
+        $json = file_get_contents(storage_path('app/data.json'));
+        $rules = collect(json_decode($json, true)['data']['fields'])->whereIn('id', $fields->pluck('id'));
 
-        return $rules->map(function (Model $model) use (&$fields) {
-            $field = $fields->where('id', '=', $model->id)->first();
+        return $rules->map(function (array $model) use (&$fields) {
+            $field = $fields->where('id', '=', $model['id'])->first();
 
             return new Field(
-                $model->id,
+                $model['id'],
                 $field['value'],
-                $model->validation,
-                $model->label,
+                $model['validation'],
+                $model['label'],
             );
         })->toArray();
     }

@@ -20,7 +20,11 @@ class FieldValidator
     {
         try {
             foreach ($this->field->validation as $rule) {
-                Rules::from($rule['rule'])->getValidator()->validate($this->field->value);
+                Rules::from($rule['rule'])->getValidator()
+                    ->setMessage($rule['message'])
+                    ->setType($rule['type'])
+                    ->setParams($rule['params'])
+                    ->validate($this->field->value);
             }
             return true;
         } catch (Exception $exception) {

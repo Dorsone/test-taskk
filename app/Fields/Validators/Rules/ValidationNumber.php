@@ -5,7 +5,7 @@ namespace App\Fields\Validators\Rules;
 use App\Fields\Constants\Rules;
 use Illuminate\Support\Facades\Validator;
 
-class ValidationInteger extends ValidationRule
+class ValidationNumber extends ValidationRule
 {
     public function __construct(string $message = 'Validation error', array $params = [], string $type = 'error')
     {

@@ -12,7 +12,7 @@ class ValidationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class ValidationRequest extends FormRequest
     {
         return [
             "fields" => 'required|array',
-            "fields.*.id" => 'required|exists:table,id',
+            "fields.*.id" => 'required',
             "fields.*.value" => 'required',
         ];
     }
